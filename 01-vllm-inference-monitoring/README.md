@@ -107,4 +107,10 @@ Source: [04_prefix_summary.csv](results/04_prefix_summary.csv)
 - Runs have limited repetition and may vary with GPU conditions, sampling frequency, warmup, or server settings. No statistical significance is claimed.
 - Model setup and source code are in [scripts/](scripts/); scripts have not yet been independently revalidated on a separate T4 runtime.
 
+## Conclusion
+
+- **Continuous Batching:** Increasing concurrency improved throughput until the scheduler limit was reached, after which waiting requests sharply increased tail TTFT.
+- **Scheduler Limits:** Increasing `max_num_seqs` improved throughput and reduced TTFT for the tested workload, but a larger limit is not universally optimal.
+- **KV Cache Capacity:** A smaller KV pool raised cache pressure; the 128 MiB run recorded 3 preemptions, highlighting the importance of memory headroom.
+- **Prefix Caching:** Reusing an identical prefix achieved a 90.52% token-weighted hit rate and reduced median TTFT by approximately 41.9% relative to Cold requests.
 
