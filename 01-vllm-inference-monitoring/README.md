@@ -6,7 +6,7 @@ Reproducible experiments on **continuous batching, scheduler concurrency, KV cac
 
 | Component | Configuration |
 |---|---|
-| GPU | NVIDIA Tesla T4 (Google Colab) |
+| GPU | NVIDIA Tesla T4  |
 | Model | `Qwen/Qwen2.5-0.5B-Instruct` |
 | Serving engine | vLLM 0.34.0 |
 | Precision | FP16 (`--dtype half`) |
