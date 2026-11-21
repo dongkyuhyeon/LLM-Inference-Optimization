@@ -2,8 +2,6 @@
 
 Reproducible experiments on **context-length scaling, MLA weight absorption, and StreamingLLM-style attention sinks**. This chapter extends [01. vLLM Inference & KV Cache Monitoring](../01-vllm-inference-monitoring/) by analyzing *why* KV memory grows, how low-rank attention computations can be rearranged, and how cache-eviction policies affect next-token prediction.
 
-**Scope:** Experiments **2–4 only**. Experiment 1 (MHA vs GQA vs MQA) is excluded from this study. Its previously committed draft script is not part of the planned execution or reported findings.
-
 ## Experiment setup
 
 | Component | Configuration |
