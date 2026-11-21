@@ -21,7 +21,8 @@ from pathlib import Path
 import torch
 
 MODEL_NAME = "EleutherAI/pythia-70m-deduped"
-TEXT_URL = "https://www.gutenberg.org/cache/epub/11/pg11.txt"\nFALLBACK_URL = "https://www.gutenberg.org/ebooks/11.txt.utf-8"
+TEXT_URL = "https://www.gutenberg.org/cache/epub/11/pg11.txt"
+FALLBACK_URL = "https://www.gutenberg.org/ebooks/11.txt.utf-8"
 RESULTS = Path("results/04_attention_sink_summary.csv")
 TRACE = Path("results/04_attention_sink_trace.csv")
 
@@ -181,7 +182,8 @@ def main():
     parser.add_argument("--model", default=MODEL_NAME)
     parser.add_argument("--tokens", type=int, default=768)
     parser.add_argument("--capacity", type=int, default=128)
-    parser.add_argument("--sinks", type=int, default=4)\n    parser.add_argument("--text-file", type=str, default=None, help="Local UTF-8 text file instead of downloading")
+    parser.add_argument("--sinks", type=int, default=4)
+    parser.add_argument("--text-file", type=str, default=None, help="Local UTF-8 text file instead of downloading")
     args = parser.parse_args()
 
     assert 0 < args.sinks < args.capacity
