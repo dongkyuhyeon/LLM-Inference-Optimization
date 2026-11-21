@@ -1,1 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="940" height="425" viewBox="0 0 940 425"><rect width="940" height="425" fill="white"/><text x="90" y="36" font-family="Arial" font-size="23" font-weight="bold" fill="#102b42">Experiment 3a | MLA Key-side Latency</text><text x="90" y="59" font-family="Arial" font-size="13" fill="#62748a">Tesla T4 · FP32 · 512D key, 64D latent · 40 timings per method (median)</text><line x1="90" x2="905" y1="340" y2="340" stroke="#e6ecf1"/><text x="78" y="345" text-anchor="end" font-family="Arial" font-size="13" fill="#536477">0.00</text><line x1="90" x2="905" y1="275" y2="275" stroke="#e6ecf1"/><text x="78" y="280" text-anchor="end" font-family="Arial" font-size="13" fill="#536477">0.07</text><line x1="90" x2="905" y1="210" y2="210" stroke="#e6ecf1"/><text x="78" y="215" text-anchor="end" font-family="Arial" font-size="13" fill="#536477">0.14</text><line x1="90" x2="905" y1="145" y2="145" stroke="#e6ecf1"/><text x="78" y="150" text-anchor="end" font-family="Arial" font-size="13" fill="#536477">0.21</text><line x1="90" x2="905" y1="80" y2="80" stroke="#e6ecf1"/><text x="78" y="85" text-anchor="end" font-family="Arial" font-size="13" fill="#536477">0.28</text><text x="90" y="365" text-anchor="middle" font-family="Arial" font-size="13" fill="#536477">512</text><text x="361.6666666666667" y="365" text-anchor="middle" font-family="Arial" font-size="13" fill="#536477">1,024</text><text x="633.3333333333334" y="365" text-anchor="middle" font-family="Arial" font-size="13" fill="#536477">2,048</text><text x="905" y="365" text-anchor="middle" font-family="Arial" font-size="13" fill="#536477">4,096</text><polyline fill="none" stroke="#ae593d" stroke-width="3" points="90,194.40000000000003 361.6666666666667,175.27142857142857 633.3333333333334,176.47857142857146 905,114.91428571428573"/><circle cx="90" cy="194.40000000000003" r="5" fill="#ae593d" stroke="white" stroke-width="2"/><circle cx="361.6666666666667" cy="175.27142857142857" r="5" fill="#ae593d" stroke="white" stroke-width="2"/><circle cx="633.3333333333334" cy="176.47857142857146" r="5" fill="#ae593d" stroke="white" stroke-width="2"/><circle cx="905" cy="114.91428571428573" r="5" fill="#ae593d" stroke="white" stroke-width="2"/><polyline fill="none" stroke="#147d80" stroke-width="3" points="90,179.54285714285714 361.6666666666667,197.3714285714286 633.3333333333334,176.85000000000002 905,190.87142857142857"/><circle cx="90" cy="179.54285714285714" r="5" fill="#147d80" stroke="white" stroke-width="2"/><circle cx="361.6666666666667" cy="197.3714285714286" r="5" fill="#147d80" stroke="white" stroke-width="2"/><circle cx="633.3333333333334" cy="176.85000000000002" r="5" fill="#147d80" stroke="white" stroke-width="2"/><circle cx="905" cy="190.87142857142857" r="5" fill="#147d80" stroke="white" stroke-width="2"/><text x="490" y="407" text-anchor="middle" font-family="Arial" font-size="14" fill="#435469">Context length (tokens)</text><text x="20" y="210" text-anchor="middle" transform="rotate(-90,20,210)" font-family="Arial" font-size="14" fill="#435469">Latency (ms)</text><line x1="120" x2="143" y1="395" y2="395" stroke="#ae593d" stroke-width="3"/><text x="150" y="400" font-family="Arial" font-size="13">Explicit reconstruction</text><line x1="340" x2="363" y1="395" y2="395" stroke="#147d80" stroke-width="3"/><text x="370" y="400" font-family="Arial" font-size="13">Weight absorption</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="565" viewBox="0 0 960 565" role="img" aria-label="Experiment 3a | MLA Key-side Latency">
+<rect width="960" height="565" fill="#ffffff"/>
+<text x="103" y="39" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#102b42">Experiment 3a | MLA Key-side Latency</text>
+<text x="103" y="66" font-family="Arial, sans-serif" font-size="13" fill="#62748a">Tesla T4 · FP32 · 512D key, 64D latent · 40 timings per method (median)</text>
+<line x1="103" x2="914" y1="397.00" y2="397.00" stroke="#e3e9ee" stroke-width="1"/>
+<text x="89" y="402.00" text-anchor="end" font-family="Arial, sans-serif" font-size="13" fill="#52647a">0.00</text>
+<line x1="103" x2="914" y1="325.75" y2="325.75" stroke="#e3e9ee" stroke-width="1"/>
+<text x="89" y="330.75" text-anchor="end" font-family="Arial, sans-serif" font-size="13" fill="#52647a">0.07</text>
+<line x1="103" x2="914" y1="254.50" y2="254.50" stroke="#e3e9ee" stroke-width="1"/>
+<text x="89" y="259.50" text-anchor="end" font-family="Arial, sans-serif" font-size="13" fill="#52647a">0.14</text>
+<line x1="103" x2="914" y1="183.25" y2="183.25" stroke="#e3e9ee" stroke-width="1"/>
+<text x="89" y="188.25" text-anchor="end" font-family="Arial, sans-serif" font-size="13" fill="#52647a">0.21</text>
+<line x1="103" x2="914" y1="112.00" y2="112.00" stroke="#e3e9ee" stroke-width="1"/>
+<text x="89" y="117.00" text-anchor="end" font-family="Arial, sans-serif" font-size="13" fill="#52647a">0.28</text>
+<text x="103.00" y="426" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#52647a">512</text>
+<text x="373.33" y="426" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#52647a">1,024</text>
+<text x="643.67" y="426" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#52647a">2,048</text>
+<text x="914.00" y="426" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#52647a">4,096</text>
+<text x="508.5" y="461" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#435469">Context length (tokens)</text>
+<text x="28" y="257" transform="rotate(-90 28 257)" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#435469">Latency (ms)</text>
+<polyline points="103.00,237.40 373.33,216.43 643.67,217.76 914.00,150.27" fill="none" stroke="#af5e42" stroke-width="3.2"  stroke-linejoin="round"/>
+<circle cx="103.00" cy="237.40" r="5.2" fill="#af5e42" stroke="#af5e42" stroke-width="1"/>
+<circle cx="373.33" cy="216.43" r="5.2" fill="#af5e42" stroke="#af5e42" stroke-width="1"/>
+<circle cx="643.67" cy="217.76" r="5.2" fill="#af5e42" stroke="#af5e42" stroke-width="1"/>
+<circle cx="914.00" cy="150.27" r="5.2" fill="#af5e42" stroke="#af5e42" stroke-width="1"/>
+<polyline points="103.00,221.11 373.33,240.66 643.67,218.16 914.00,233.53" fill="none" stroke="#147d80" stroke-width="3.2"  stroke-linejoin="round"/>
+<circle cx="103.00" cy="221.11" r="5.2" fill="#147d80" stroke="#147d80" stroke-width="1"/>
+<circle cx="373.33" cy="240.66" r="5.2" fill="#147d80" stroke="#147d80" stroke-width="1"/>
+<circle cx="643.67" cy="218.16" r="5.2" fill="#147d80" stroke="#147d80" stroke-width="1"/>
+<circle cx="914.00" cy="233.53" r="5.2" fill="#147d80" stroke="#147d80" stroke-width="1"/>
+<line x1="109.00" x2="136.00" y1="518" y2="518" stroke="#af5e42" stroke-width="3" />
+<text x="147.00" y="523" font-family="Arial, sans-serif" font-size="13" fill="#435469">Explicit reconstruction</text>
+<line x1="514.50" x2="541.50" y1="518" y2="518" stroke="#147d80" stroke-width="3" />
+<text x="552.50" y="523" font-family="Arial, sans-serif" font-size="13" fill="#435469">Weight absorption</text>
+</svg>
