@@ -13,6 +13,7 @@ import argparse
 import csv
 import math
 import random
+import time
 import statistics
 import urllib.request
 from pathlib import Path
@@ -20,19 +21,42 @@ from pathlib import Path
 import torch
 
 MODEL_NAME = "EleutherAI/pythia-70m-deduped"
-TEXT_URL = "https://www.gutenberg.org/cache/epub/11/pg11.txt"
+TEXT_URL = "https://www.gutenberg.org/cache/epub/11/pg11.txt"\nFALLBACK_URL = "https://www.gutenberg.org/ebooks/11.txt.utf-8"
 RESULTS = Path("results/04_attention_sink_summary.csv")
 TRACE = Path("results/04_attention_sink_trace.csv")
 
 
-def load_text():
-    request = urllib.request.Request(
-        TEXT_URL, headers={"User-Agent": "Mozilla/5.0 (research benchmark)"}
+def load_text(local_file=None):
+    if local_file is not None:
+        path = Path(local_file)
+        text = path.read_text(encoding="utf-8-sig", errors="replace")
+        assert len(text) > 5000, "Input text file too short"
+        print("Input text source:", str(path))
+        return text
+
+    errors = []
+    for url in [TEXT_URL, FALLBACK_URL]:
+        for attempt in range(2):
+            try:
+                request = urllib.request.Request(
+                    url, headers={"User-Agent": "Mozilla/5.0 (research benchmark)"}
+                )
+                with urllib.request.urlopen(request, timeout=40) as response:
+                    text = response.read().decode("utf-8-sig", errors="replace")
+                if len(text) <= 5000:
+                    raise ValueError("Downloaded text too short")
+                print("Input text source:", url)
+                return text
+            except Exception as exc:
+                errors.append(f"{url}: {type(exc).__name__}: {exc}")
+                print("Download failed:", type(exc).__name__, str(exc))
+                if attempt == 0:
+                    time.sleep(2)
+    raise RuntimeError(
+        "Both Gutenberg endpoints failed. Supply an already downloaded "
+        "plain-text book using --text-file /content/alice_input.txt. "
+        + " | ".join(errors)
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        text = response.read().decode("utf-8-sig", errors="replace")
-    assert len(text) > 5000, "Unexpectedly short text input"
-    return text
 
 
 def get_layer_cache(cache):
@@ -157,7 +181,7 @@ def main():
     parser.add_argument("--model", default=MODEL_NAME)
     parser.add_argument("--tokens", type=int, default=768)
     parser.add_argument("--capacity", type=int, default=128)
-    parser.add_argument("--sinks", type=int, default=4)
+    parser.add_argument("--sinks", type=int, default=4)\n    parser.add_argument("--text-file", type=str, default=None, help="Local UTF-8 text file instead of downloading")
     args = parser.parse_args()
 
     assert 0 < args.sinks < args.capacity
@@ -173,7 +197,7 @@ def main():
     print("torch:", torch.__version__, "transformers:", transformers.__version__)
     print("Model:", args.model)
     print("Download text:", TEXT_URL)
-    text = load_text()
+    text = load_text(args.text_file)
     tok = AutoTokenizer.from_pretrained(args.model)
     ids = tok(text, return_tensors="pt", add_special_tokens=False).input_ids[0]
     assert ids.numel() > args.tokens, (ids.numel(), args.tokens)
