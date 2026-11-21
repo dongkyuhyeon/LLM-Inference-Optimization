@@ -13,51 +13,28 @@ import argparse
 import csv
 import math
 import random
-import time
 import statistics
-import urllib.request
 from pathlib import Path
 
 import torch
 
 MODEL_NAME = "EleutherAI/pythia-70m-deduped"
-TEXT_URL = "https://www.gutenberg.org/cache/epub/11/pg11.txt"
-FALLBACK_URL = "https://www.gutenberg.org/ebooks/11.txt.utf-8"
 RESULTS = Path("results/04_attention_sink_summary.csv")
 TRACE = Path("results/04_attention_sink_trace.csv")
 
 
-def load_text(local_file=None):
-    if local_file is not None:
-        path = Path(local_file)
-        text = path.read_text(encoding="utf-8-sig", errors="replace")
-        assert len(text) > 5000, "Input text file too short"
-        print("Input text source:", str(path))
-        return text
+DEFAULT_TEXT = Path(__file__).resolve().parents[1] / "data" / "alice_excerpt.txt"
 
-    errors = []
-    for url in [TEXT_URL, FALLBACK_URL]:
-        for attempt in range(2):
-            try:
-                request = urllib.request.Request(
-                    url, headers={"User-Agent": "Mozilla/5.0 (research benchmark)"}
-                )
-                with urllib.request.urlopen(request, timeout=40) as response:
-                    text = response.read().decode("utf-8-sig", errors="replace")
-                if len(text) <= 5000:
-                    raise ValueError("Downloaded text too short")
-                print("Input text source:", url)
-                return text
-            except Exception as exc:
-                errors.append(f"{url}: {type(exc).__name__}: {exc}")
-                print("Download failed:", type(exc).__name__, str(exc))
-                if attempt == 0:
-                    time.sleep(2)
-    raise RuntimeError(
-        "Both Gutenberg endpoints failed. Supply an already downloaded "
-        "plain-text book using --text-file /content/alice_input.txt. "
-        + " | ".join(errors)
-    )
+
+def load_text(local_file=None):
+    path = Path(local_file) if local_file else DEFAULT_TEXT
+    if not path.is_file():
+        raise FileNotFoundError(f"Evaluation text not found: {path}. Run git pull origin main.")
+    text = path.read_text(encoding="utf-8-sig", errors="replace")
+    if len(text) < 5000:
+        raise ValueError(f"Evaluation text unexpectedly short: {len(text)} characters")
+    print("Input text source:", path)
+    return text
 
 
 def get_layer_cache(cache):
@@ -198,7 +175,7 @@ def main():
     print("GPU:", torch.cuda.get_device_name(0))
     print("torch:", torch.__version__, "transformers:", transformers.__version__)
     print("Model:", args.model)
-    print("Download text:", TEXT_URL)
+    print("Evaluation text: bundled local Alice excerpt")
     text = load_text(args.text_file)
     tok = AutoTokenizer.from_pretrained(args.model)
     ids = tok(text, return_tensors="pt", add_special_tokens=False).input_ids[0]
@@ -220,7 +197,7 @@ def main():
         )
         row.update({
             "model": args.model,
-            "input_source": TEXT_URL,
+            "input_source": str(Path(args.text_file).resolve() if args.text_file else DEFAULT_TEXT),
             "position_policy": "original_absolute_rope",
             "dtype": "float16",
             "transformers_version": transformers.__version__
