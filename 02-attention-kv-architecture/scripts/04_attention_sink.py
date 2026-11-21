@@ -154,14 +154,44 @@ def evaluate(model, token_ids, name, capacity, sinks, eval_limit, device):
     }, rows
 
 
+
+def run_self_test():
+    """Offline check: local corpus and exact cache retention policies."""
+    text = load_text()
+    assert len(text) >= 5000
+    class Layer:
+        def __init__(self):
+            self.keys = torch.arange(10).reshape(1, 1, 10, 1).float()
+            self.values = self.keys.clone() * 10
+    class Cache:
+        def __init__(self):
+            self.layers = [Layer(), Layer()]
+    for sinks, expected in [(0, [4, 5, 6, 7, 8, 9]),
+                            (2, [0, 1, 6, 7, 8, 9])]:
+        cache = Cache()
+        count = trim(cache, capacity=6, sink_count=sinks)
+        assert count == 6
+        for layer in cache.layers:
+            keys = layer.keys.flatten().long().tolist()
+            values = layer.values.flatten().long().tolist()
+            assert keys == expected, (sinks, keys)
+            assert values == [10 * i for i in expected], (sinks, values)
+    print("SELF-TEST PASSED: bundled text, sliding eviction, sink retention, both K and V.")
+
+
+
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--self-test", action="store_true", help="Offline corpus/eviction verification")
     parser.add_argument("--model", default=MODEL_NAME)
     parser.add_argument("--tokens", type=int, default=768)
     parser.add_argument("--capacity", type=int, default=128)
     parser.add_argument("--sinks", type=int, default=4)
     parser.add_argument("--text-file", type=str, default=None, help="Local UTF-8 text file instead of downloading")
     args = parser.parse_args()
+    if args.self_test:
+        run_self_test()
+        return
 
     assert 0 < args.sinks < args.capacity
     assert args.tokens > args.capacity + 64
