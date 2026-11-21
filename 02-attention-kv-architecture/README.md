@@ -9,7 +9,7 @@ Building on [01. vLLM Inference & KV Cache Monitoring](../01-vllm-inference-moni
 
 | Component | Configuration |
 |---|---|
-| Environment | Google Colab, NVIDIA Tesla T4 |
+| Environment |  NVIDIA Tesla T4 |
 | Python | 3.13.16 |
 | PyTorch | 2.14.0+cu130 |
 | CUDA | 13.0 |
