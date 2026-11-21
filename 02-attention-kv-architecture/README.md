@@ -4,7 +4,7 @@ Empirical studies of **KV cache growth, MLA weight absorption, and attention-sin
 
 Building on [01. vLLM Inference & KV Cache Monitoring](../01-vllm-inference-monitoring/), these experiments examine **where KV memory comes from**, **how equivalent Attention operations can be rearranged**, and **what happens to next-token prediction when old KV entries are evicted**.
 
-> **Results provenance:** This README reports **observations from the Colab outputs shared during the experiments** (21 Nov 2026). Figures are **redrawn from those displayed measurements**, not uploaded original Colab PNGs or raw CSVs. The actual Colab CSV files have **not yet been committed**. The source scripts are available in [scripts/](scripts/). These are limited runs, not statistically established production benchmarks.
+> **Results provenance:** This README reports **observations from the Colab outputs shared during the experiments** (21 Nov 2026). Figures are **redrawn from the displayed Colab measurements** to provide consistent presentation across experiments; they are not the original Colab PNG screenshots or raw CSVs. The actual Colab CSV files have **not yet been committed**. The source scripts are available in [scripts/](scripts/). These are limited runs, not statistically established production benchmarks.
 
 ## Experiment setup
 
@@ -68,6 +68,8 @@ This is a **change in computation order**, not a claim that training a low-rank 
 | 1,024 | 0.1774 | 0.1536 | 1.16× |
 | 2,048 | 0.1761 | 0.1757 | 1.00× |
 | 4,096 | 0.2424 | 0.1606 | 1.51× |
+
+![Key-only MLA latency comparison](figures/03a_mla_key_absorption_latency.svg)
 
 **Observation:** Max attention-score absolute error was on the order of `1e-6`. The absorbed path was faster at 4,096 tokens in this run, but **not** at every shorter length. The 64D latent represents 1 MiB at 4,096 tokens versus 8 MiB for an explicitly materialized 512D *key* (FP32); this is a **representation-size comparison**, not a complete MLA KV-cache measurement.
 
