@@ -6,7 +6,7 @@ Reproducible experiments on **context-length scaling, MLA weight absorption, and
 
 | Component | Configuration |
 |---|---|
-| Environment | Google Colab, PyTorch; retain the previous chapter's vLLM environment where compatible |
+| Environment | PyTorch; retain the previous chapter's vLLM environment where compatible |
 | GPU | NVIDIA Tesla T4 (target; verify at runtime) |
 | vLLM | 0.34.0 (previous chapter's version; check installation compatibility at runtime) |
 | Precision | FP16 for KV storage; FP32 for MLA equivalence checks |
