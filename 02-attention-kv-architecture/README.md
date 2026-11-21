@@ -169,7 +169,7 @@ This is a **change in computation order**, not a claim that training a low-rank 
 ## Reproduction and limitations
 
 ```bash
-# From 02-attention-kv-architecture/ on a CUDA-enabled Colab runtime
+# From 02-attention-kv-architecture/ on a CUDA-enabled GPU runtime
 python scripts/02_context_length_sweep.py
 python scripts/03_mla_weight_absorption.py
 python scripts/03b_weight_absorption_accuracy.py
@@ -178,7 +178,7 @@ python scripts/04_attention_sink.py --self-test
 python scripts/04_attention_sink.py --tokens 768 --capacity 128 --sinks 4
 ```
 
-- Figure values are transcribed from experiment output screenshots; **raw Colab result files are not yet tracked here**. Re-running can produce different latency numbers.
+- Figure values are transcribed from experiment output screenshots; **raw original result files are not yet tracked here**. Re-running can produce different latency numbers.
 - No paper-level reproduction of DeepSeek MLA or official StreamingLLM is claimed.
 - Synthetic attention measurements are not measurements of production vLLM, model weights, real serving throughput, or language-model quality.
 - A single FP32 Pythia run on one text is not a statistical quality study. A broader evaluation should repeat conditions, vary texts/models, and report post-eviction-only loss.
