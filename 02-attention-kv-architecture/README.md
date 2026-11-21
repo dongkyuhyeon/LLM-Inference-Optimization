@@ -102,6 +102,3 @@ Query-side absorption:   score = ((W_up_K)^T q)^T c
 
 **Pending experiments.** This chapter will document measured KV memory scaling, the MHA/GQA/MQA footprint trade-off, and the numerical and computational implications of MLA weight absorption after the scripts have been executed.
 
-## Reference
-
-- [WikiDocs — Attention Architecture & KV Cache](https://wikidocs.net/416899)
