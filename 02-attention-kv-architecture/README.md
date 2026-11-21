@@ -1,6 +1,6 @@
 # Attention Architecture & KV Cache Experiments
 
-Empirical studies of **KV cache growth, MLA weight absorption, and attention-sink cache retention** on a Google Colab Tesla T4.
+Empirical studies of **KV cache growth, MLA weight absorption, and attention-sink cache retention** on aTesla T4.
 
 Building on [01. vLLM Inference & KV Cache Monitoring](../01-vllm-inference-monitoring/), these experiments examine **where KV memory comes from**, **how equivalent Attention operations can be rearranged**, and **what happens to next-token prediction when old KV entries are evicted**.
 
