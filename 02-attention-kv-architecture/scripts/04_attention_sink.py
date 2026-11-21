@@ -130,7 +130,16 @@ def evaluate(model, token_ids, name, capacity, sinks, eval_limit, device):
             current_cache = get_layer_cache(cache)[0][0].shape[-2]
             assert current_cache <= capacity + 1, (name, t, current_cache)
             max_cache = max(max_cache, current_cache)
-            log_prob = torch.log_softmax(out.logits[0, -1].float(), dim=-1)
+            logits = out.logits[0, -1].float()
+            if not torch.isfinite(logits).all():
+                bad = (~torch.isfinite(logits)).sum().item()
+                raise RuntimeError(
+                    f"Nonfinite model logits at t={t}, method={name}, "
+                    f"nonfinite_elements={bad}/{logits.numel()}, "
+                    f"model_dtype={next(model.parameters()).dtype}. "
+                    "Check model forward and precision before interpreting PPL."
+                )
+            log_prob = torch.log_softmax(logits, dim=-1)
             nll = -log_prob[token_ids[t+1].item()].item()
             if not math.isfinite(nll):
                 raise RuntimeError(f"Nonfinite NLL at t={t}, method={name}")
@@ -213,9 +222,23 @@ def main():
     ids = ids[:args.tokens+1].contiguous()
     print(f"Document tokens: {ids.numel()}; evaluated next tokens: {args.tokens}")
 
+    # FP32 avoids possible half-precision overflow/NaN on a T4.
+    # Both policies use exactly the same precision.
     model = AutoModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=torch.float16, attn_implementation="eager"
+        args.model, dtype=torch.float32, attn_implementation="eager"
     ).to(device).eval()
+    # Test ordinary inference before touching the KV cache.
+    with torch.inference_mode():
+        preflight = model(
+            input_ids=ids[:2].view(1, 2).to(device),
+            use_cache=False, return_dict=True
+        ).logits
+    print("Preflight logits finite:", bool(torch.isfinite(preflight).all()))
+    if not torch.isfinite(preflight).all():
+        raise RuntimeError(
+            "Model produced NaN/Inf in a plain FP32 forward; "
+            "cannot reliably run the cache-eviction experiment."
+        )
     print("Attention implementation: eager; cache budget:", args.capacity)
     print("Both methods use original absolute position IDs (controlled ablation).")
 
@@ -229,7 +252,7 @@ def main():
             "model": args.model,
             "input_source": str(Path(args.text_file).resolve() if args.text_file else DEFAULT_TEXT),
             "position_policy": "original_absolute_rope",
-            "dtype": "float16",
+            "dtype": "float32",
             "transformers_version": transformers.__version__
         })
         summaries.append(row)
