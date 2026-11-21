@@ -18,7 +18,7 @@ Reproducible experiments on **context-length scaling, MLA weight absorption, and
 
 > **Status:** Planned, not yet run. No results or performance improvements are claimed. Experiments 2–3 test mechanisms rather than pretrained-model quality or end-to-end vLLM speed. Experiment 4 needs careful model-specific validation.
 
-## 2. Context-length scaling
+## 1. Context-length scaling
 
 **Goal:** Verify how KV storage increases with the number of retained tokens.
 
@@ -37,7 +37,7 @@ KV_bytes = 2 (K and V) * num_layers * context_tokens
 
 **Status:** Not run.
 
-## 3. MLA weight absorption
+## 2. MLA weight absorption
 
 **Goal:** Confirm the algebraic equivalence of explicit key reconstruction and query-side weight absorption for a simplified MLA *content* path.
 
@@ -55,7 +55,7 @@ Query-side absorption:   score = ((W_up_K)^T q)^T c
 
 **Status:** Not run.
 
-## 4. Sliding window vs attention sinks
+## 3. Sliding window vs attention sinks
 
 **Goal:** Compare plain sliding-window eviction with a fixed initial-sink-plus-recent-window policy on a compatible pretrained causal language model.
 
@@ -86,6 +86,4 @@ Query-side absorption:   score = ((W_up_K)^T q)^T c
 
 **Pending experiments.** The chapter will report the measured effect of context length on KV memory, MLA content-path algebraic and runtime checks, and the quality/memory trade-off between sliding-window and sink-preserving cache eviction.
 
-## Reference
 
-- [WikiDocs — Attention Architecture & KV Cache](https://wikidocs.net/416899)
