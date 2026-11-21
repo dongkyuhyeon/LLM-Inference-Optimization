@@ -4,7 +4,6 @@ Empirical studies of **KV cache growth, MLA weight absorption, and attention-sin
 
 Building on [01. vLLM Inference & KV Cache Monitoring](../01-vllm-inference-monitoring/), these experiments examine **where KV memory comes from**, **how equivalent Attention operations can be rearranged**, and **what happens to next-token prediction when old KV entries are evicted**.
 
-> **Results provenance:** This README reports **observations from the Colab outputs shared during the experiments** (21 Nov 2026). Figures are **redrawn from the displayed Colab measurements** to provide consistent presentation across experiments; they are not the original Colab PNG screenshots or raw CSVs. The actual Colab CSV files have **not yet been committed**. The source scripts are available in [scripts/](scripts/). These are limited runs, not statistically established production benchmarks.
 
 ## Experiment setup
 
