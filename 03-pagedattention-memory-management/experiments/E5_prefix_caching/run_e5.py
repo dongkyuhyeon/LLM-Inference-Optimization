@@ -38,7 +38,7 @@ def counter_snapshot(base):
         "kv_usage": ("vllm:kv_cache_usage_perc", "vllm:gpu_cache_usage_perc"),
     }
     samples = {}
-    regex = re.compile(r"^([^\\s{]+)(?:\\{[^}]*\\})?\\s+([-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][-+]?\\d+)?)")
+    regex = re.compile(r"^([^\s{]+)(?:\{[^}]*\})?\s+([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)")
     for line in raw.splitlines():
         match = regex.match(line)
         if match:
