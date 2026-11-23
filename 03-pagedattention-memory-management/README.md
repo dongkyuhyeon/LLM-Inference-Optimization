@@ -101,10 +101,21 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 
 
 
-## E2: KV Capacity & Preemption — Results
+## E2: KV Cache Capacity & Preemption — Results
 
-Actual vLLM benchmark (`Qwen/Qwen2.5-0.5B-Instruct`, FP16). The 12-condition baseline sweep had **2.16% maximum observed KV usage** and **zero preemptions**. A separate higher-load run (96 requests, 2,048 input + 1,024 output tokens, 16 req/s, max 32 sequences) reached **12.06% KV usage**, **75 waiting requests at peak**, **100.35 s P99 TTFT**, **695.24 output tokens/s**, and **zero preemptions**.
+**Purpose:** Measure actual vLLM KV cache usage, request queueing, preemption, and latency as serving load increases.
 
-![Measured KV usage comparison](figures/E2_kv_usage_comparison.svg)
+The higher-load run used **96 synthetic requests** of **2,048 input + 1,024 output tokens** each (16 requests/s, `max_num_seqs=32`, GPU memory fraction 0.75).
 
-**Interpretation:** Queueing occurred before KV memory was exhausted. The experiment did not trigger KV-capacity-based preemption. See [compact E2 results, setup and code](experiments/E2_kv_capacity_preemption/README.md).
+| Key measured result | Value |
+|---|---:|
+| KV cache usage (mean / peak) | **8.52% / 12.06%** |
+| Running / waiting requests (peak) | **32 / 75** |
+| Preemptions | **0** |
+| Output throughput | **695.24 tokens/s** |
+| Mean / P99 TTFT | **50.76 / 100.35 seconds** |
+| Mean / P99 TPOT | **42.68 / 45.67 ms** |
+
+**Result:** The running-sequence limit was reached and requests accumulated in the waiting queue while KV cache use stayed below 13%. **No preemption occurred** in this run. The experiment therefore demonstrates queueing under the configured workload, rather than a KV-capacity exhaustion threshold.
+
+[Full experiment objective, source-derived metrics and execution commands](experiments/E2_kv_capacity_preemption/README.md).
