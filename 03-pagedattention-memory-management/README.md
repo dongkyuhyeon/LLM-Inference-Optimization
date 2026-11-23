@@ -8,7 +8,7 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 |---|---|---|
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
 | **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
-| **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **Code implemented — [experiment](experiments/E3_continuous_batching/README.md)** |
+| **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **32 measured conditions — [results](experiments/E3_continuous_batching/README.md)** |
 | E4 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
 | E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
@@ -119,3 +119,18 @@ The higher-load run used **96 synthetic requests** of **2,048 input + 1,024 outp
 **Result:** The running-sequence limit was reached and requests accumulated in the waiting queue while KV cache use stayed below 13%. **No preemption occurred** in this run. The experiment therefore demonstrates queueing under the configured workload, rather than a KV-capacity exhaustion threshold.
 
 [Full experiment objective, source-derived metrics and execution commands](experiments/E2_kv_capacity_preemption/README.md).
+
+## E3: Continuous Batching — Results
+
+Two 16-condition sweeps measured `max_num_seqs` (4/8/16/32) and incoming request rates (1/2/4/8 requests/s), with **48 synthetic requests per condition**.
+
+| Arrival rate | Mean output throughput | Mean of condition-level P99 TTFT |
+|---:|---:|---:|
+| 1 req/s | 246.30 tokens/s | 94.77 ms |
+| 2 req/s | 467.55 tokens/s | 95.35 ms |
+| 4 req/s | 830.88 tokens/s | 130.28 ms |
+| 8 req/s | 1,176.36 tokens/s | 1,023.75 ms |
+
+![E3 measured request-rate vs throughput and TTFT](figures/E3_request_rate_throughput_ttft.svg)
+
+**Observation:** The waiting queue appeared (sampled peak 4–5) at 8 requests/s, along with sharply higher tail first-token latency. Increasing `max_num_seqs` did not consistently improve performance at this load. See [full E3 analysis and 32 source measurements](experiments/E3_continuous_batching/README.md).
