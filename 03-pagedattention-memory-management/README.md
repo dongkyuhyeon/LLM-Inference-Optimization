@@ -92,6 +92,8 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 | Mixed | 64 | 681 | 591 | 1.36% | 85.12 | 86 |
 | Mixed | 128 | 345 | 1167 | 2.64% | 86.25 | 86.25 |
 
+**Metric definitions:** **KV payload (MiB)** is the theoretical memory needed for all allocated K/V token slots, including unused tail slots: `physical blocks × block size × KV bytes per token`. **CUDA allocated delta (MiB)** is the increase in PyTorch's `torch.cuda.memory_allocated()` when the corresponding synthetic FP16 K/V tensor is created on the GPU. It is not total GPU VRAM usage or model inference memory.
+
 **Observed pattern:** in these fixed request sets, smaller blocks reduced the fraction of unused tail slots. The impact was much more pronounced for short requests (block 8: **1.16%**, block 128: **18.66%**) than long requests (**0.11%** vs **1.85%**). Block count moved in the opposite direction: e.g. mixed workload **5,384 blocks (size 8)** vs **345 blocks (size 128)**. A smaller block may therefore cost additional block management work; no speed conclusion follows from this experiment.
 
 **Important measurement caveat:** for some block sizes the CUDA allocated-memory delta exceeded the exact tensor payload (e.g. short, block 128: **16 MiB observed vs 15 MiB tensor bytes**). This is consistent with backend allocator granularity but was **not independently diagnosed**. Never label the CUDA delta as inference latency, full VRAM footprint, or a paged-attention kernel measurement.
