@@ -1,0 +1,16 @@
+workload,block_size,blocks,wasted_slots,used_tokens,allocated_slots,fragmentation_pct,payload_mib,cuda_allocated_delta_mib,source
+short,8,790,73,6247,6320,1.1551,12.34375,12.34375,user_cuda_console_screenshot_2026-11-23
+short,16,401,169,6247,6416,2.6340,12.53125,12.53125,user_cuda_console_screenshot_2026-11-23
+short,32,207,377,6247,6624,5.6914,12.93750,12.9375,user_cuda_console_screenshot_2026-11-23
+short,64,111,857,6247,7104,12.0636,13.87500,14,user_cuda_console_screenshot_2026-11-23
+short,128,60,1433,6247,7680,18.6589,15.00000,16,user_cuda_console_screenshot_2026-11-23
+long,8,9385,81,74999,75080,0.1079,146.64063,146.640625,user_cuda_console_screenshot_2026-11-23
+long,16,4698,169,74999,75168,0.2248,146.81250,146.8125,user_cuda_console_screenshot_2026-11-23
+long,32,2354,329,74999,75328,0.4368,147.12500,147.125,user_cuda_console_screenshot_2026-11-23
+long,64,1181,585,74999,75584,0.7740,147.62500,148,user_cuda_console_screenshot_2026-11-23
+long,128,597,1417,74999,76416,1.8543,149.25000,150,user_cuda_console_screenshot_2026-11-23
+mixed,8,5384,79,42993,43072,0.1834,84.12500,84.125,user_cuda_console_screenshot_2026-11-23
+mixed,16,2698,175,42993,43168,0.4054,84.31250,84.3125,user_cuda_console_screenshot_2026-11-23
+mixed,32,1354,335,42993,43328,0.7732,84.62500,84.625,user_cuda_console_screenshot_2026-11-23
+mixed,64,681,591,42993,43584,1.3560,85.12500,86,user_cuda_console_screenshot_2026-11-23
+mixed,128,345,1167,42993,44160,2.6427,86.25000,86.25,user_cuda_console_screenshot_2026-11-23
