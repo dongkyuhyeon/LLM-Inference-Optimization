@@ -58,7 +58,7 @@ Results are saved to:
 
 CSV includes the theoretical KV tensor payload, a fixed-capacity reservation baseline, unused slot fraction, and optional observed CUDA **allocated-memory delta**. The CUDA delta is for PyTorch's synthetic tensor allocation, **not** an end-to-end vLLM experiment.
 
-### E1 results — 2026-11-23
+### E1 results 
 
 Both theoretical CPU calculation and the optional CUDA tensor allocation run were completed by the experimenter. **The table below was transcribed from two console screenshots; the original generated CSV and PNG were not uploaded.** CSV: [E1 block-size results transcribed from screenshots](results/E1_block_size_summary_from_screenshots.csv).
 
@@ -84,11 +84,4 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 
 **Important measurement caveat:** for some block sizes the CUDA allocated-memory delta exceeded the exact tensor payload (e.g. short, block 128: **16 MiB observed vs 15 MiB tensor bytes**). This is consistent with backend allocator granularity but was **not independently diagnosed**. Never label the CUDA delta as inference latency, full VRAM footprint, or a paged-attention kernel measurement.
 
-### Interpretation rules
 
-1. Reported numerical results come from the provided terminal screenshots; the raw runtime CSV and PNG still need to be collected for full provenance.
-2. Smaller blocks typically reduce maximum last-block waste per request, but increase the number of block-table entries.
-3. The fixed-reservation baseline is an intentionally naive allocator for comparison, **not a universal description of other serving engines**.
-4. Observed CUDA allocation is not total GPU HBM usage, allocator reserved bytes, or model inference peak memory.
-5. This experiment does **not** measure PagedAttention CUDA-kernel runtime, TTFT, TPOT or throughput. Those require follow-up serving benchmarks.
-6. The block-size list is an **allocator study**, not a claim that every size is supported by all vLLM engine/hardware versions.
