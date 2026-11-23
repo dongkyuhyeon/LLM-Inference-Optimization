@@ -1,6 +1,6 @@
 # PagedAttention & LLM Serving Optimization
 
-Five connected experiments on KV memory management, concurrency, scheduling, and serving performance.
+Four connected experiments on KV memory management, concurrency, scheduling, and serving performance.
 
 ## Experimental roadmap
 
@@ -8,9 +8,9 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 |---|---|---|
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
 | **E2 — KV Capacity & Preemption** | GPU memory budget, preemptions, waiting requests | **Implementation added; awaiting GPU benchmark** |
-| E3 — Continuous Batching | Request-rate/concurrency sweeps | Planned |
-| E4 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
-| E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
+| **E2 — Continuous Batching** | Request-rate/concurrency sweeps | **Planned — [experiment folder](experiments/E2_continuous_batching/README.md)** |
+| E3 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
+| E4 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
 ## E1: KV Block Size & Memory Efficiency
 
@@ -100,57 +100,3 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 
 
 
-## E2: KV Cache Capacity & Preemption
-
-**Question:** How do the GPU memory budget and the maximum number of in-flight sequences affect KV cache occupancy, request queueing, preemption, and serving throughput?
-
-### Experiment implementation
-
-Script: [`experiments/E2_kv_capacity_preemption/run_e2.py`](experiments/E2_kv_capacity_preemption/run_e2.py)
-
-The script starts a **real vLLM HTTP server**, runs `vllm bench serve` with synthetic token workloads, samples actual Prometheus `/metrics` during each benchmark, and stops/restarts the server for each setting.
-
-| Controlled setting | Default |
-|---|---|
-| Model | `Qwen/Qwen2.5-0.5B-Instruct` |
-| Inference precision | FP16 |
-| Max model length | 4096 |
-| Max batched tokens | 4096 |
-| Synthetic input/output lengths | 1024 / 256 tokens |
-| Requests per run | 48 |
-| Seed | 1993 |
-| GPU memory fractions | 0.75, 0.85, 0.90 |
-| Max in-flight sequences | 8, 16 |
-| Request arrival rates | 2, 4 requests/sec |
-
-These are **starting test settings**, not measured optima. The actual workload may need adjustment to cause KV pressure on a 16GB GPU.
-
-### Run from the chapter directory
-
-Start with one small smoke test before the full sweep:
-
-```bash
-python experiments/E2_kv_capacity_preemption/run_e2.py \
-  --memory-utilizations 0.80 --max-num-seqs 8 --request-rates 2 \
-  --num-prompts 12
-```
-
-Full configured sweep:
-
-```bash
-python experiments/E2_kv_capacity_preemption/run_e2.py
-```
-
-The run stores `results/E2_kv_capacity_preemption/<UTC timestamp>/summary.csv`, a JSON configuration, per-case server/benchmark logs, vLLM benchmark JSON, and `metrics_timeseries.csv`.
-
-### Metric interpretation
-
-- **KV occupancy:** fraction of *vLLM-managed KV capacity* being used, not fraction of total GPU HBM.
-- **Preemptions delta:** difference in an exposed cumulative preemption counter between the start and end of a benchmark. The metric may be renamed/absent across versions; missing values remain blank.
-- **Waiting peak:** maximum observed waiting requests at the metric sampling interval. Short spikes may be missed.
-- **TTFT/TPOT and throughput:** measurements returned by `vllm bench serve` for the actual server workload.
-- The harness checks for legacy/newer metrics naming but does **not** turn missing data into zeros.
-- A completed run **does not** guarantee preemption occurred. If none is observed, the load must be increased or the workload/model reconsidered.
-- The server is launched and stopped locally; it must have exclusive access to its TCP port, and the benchmark runner requires an NVIDIA GPU with a compatible vLLM installation.
-
-**Results:** Not yet run. No throughput, KV usage, or preemption values are claimed.
