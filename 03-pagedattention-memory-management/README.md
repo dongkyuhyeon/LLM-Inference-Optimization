@@ -62,7 +62,7 @@ CSV includes the theoretical KV tensor payload, a fixed-capacity reservation bas
 
 Both theoretical CPU calculation and the optional CUDA tensor allocation run were completed by the experimenter. **The table below was transcribed from two console screenshots; the original generated CSV and PNG were not uploaded.** CSV: [E1 block-size results transcribed from screenshots](results/E1_block_size_summary_from_screenshots.csv).
 
-| Workload | Block size | Blocks | Unused slots | Fragmentation | KV payload (MiB) | CUDA allocated delta (MiB) |
+| Workload | Block size | Physical Blocks | Unused slots | Fragmentation | KV payload (MiB) | CUDA allocated delta (MiB) |
 |---|---:|---:|---:|---:|---:|---:|
 | Short | 8 | 790 | 73 | 1.16% | 12.34 | 12.34375 |
 | Short | 16 | 401 | 169 | 2.63% | 12.53 | 12.53125 |
