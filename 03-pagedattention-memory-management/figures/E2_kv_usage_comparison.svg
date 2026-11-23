@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 380" width="920" height="380" role="img" aria-labelledby="title desc">
+<title id="title">E2: Observed KV Cache Peak Usage</title>
+<desc id="desc">Baseline sweep maximum observed KV use 2.16 percent, stress run 12.06 percent, with zero preemptions in both experiments.</desc>
+<rect width="920" height="380" rx="20" fill="#0f172a"/>
+<text x="42" y="60" fill="#f8fafc" font-family="Arial,sans-serif" font-size="29" font-weight="700">E2 | KV Cache Capacity &amp; Preemption</text>
+<text x="42" y="91" fill="#94a3b8" font-family="Arial,sans-serif" font-size="16">Maximum observed KV pool usage (not total GPU VRAM)</text>
+<text x="42" y="150" fill="#e2e8f0" font-family="Arial,sans-serif" font-size="19" font-weight="600">Baseline sweep (12 conditions)</text>
+<rect x="42" y="168" width="720" height="35" rx="6" fill="#27364b"/>
+<rect x="42" y="168" width="78" height="35" rx="6" fill="#38bdf8"/>
+<text x="784" y="192" fill="#f8fafc" font-family="Arial,sans-serif" font-size="23" font-weight="700">2.16%</text>
+<text x="42" y="249" fill="#e2e8f0" font-family="Arial,sans-serif" font-size="19" font-weight="600">Higher-load run (96 requests)</text>
+<rect x="42" y="267" width="720" height="35" rx="6" fill="#27364b"/>
+<rect x="42" y="267" width="434" height="35" rx="6" fill="#2dd4bf"/>
+<text x="784" y="291" fill="#f8fafc" font-family="Arial,sans-serif" font-size="23" font-weight="700">12.06%</text>
+<text x="42" y="346" fill="#cbd5e1" font-family="Arial,sans-serif" font-size="16">Preemptions: 0 in both runs   |   High-load waiting peak: 75 requests</text>
+</svg>
