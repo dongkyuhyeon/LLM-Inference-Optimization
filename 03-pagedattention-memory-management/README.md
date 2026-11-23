@@ -8,7 +8,7 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 |---|---|---|
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
 | **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
-| E3 — Continuous Batching | Request-rate/concurrency sweeps | Planned |
+| **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **Code implemented — [experiment](experiments/E3_continuous_batching/README.md)** |
 | E4 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
 | E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
