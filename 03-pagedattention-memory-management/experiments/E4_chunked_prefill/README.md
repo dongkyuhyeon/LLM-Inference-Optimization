@@ -64,15 +64,27 @@ The following is transcribed from the experimenter's displayed `summary.csv` dat
 
 ![E4 measured P99 ITL and TTFT by token budget](../../figures/E4_chunked_prefill_latency.svg)
 
-### Result interpretation
+### Detailed observations
 
-- **Short P99 TTFT** increased from **14.37 s** at budget 512 to **15.47 s** at budget 4096 in this run.
-- **Short P99 ITL** did **not** decrease monotonically with smaller budgets: **258.92, 420.25, 422.93, 85.57 ms**, respectively. The budget-4096 result had the smallest observed P99 ITL.
-- **Long P99 TTFT** was lowest at budget **2048** (**14.40 s**) within these four measurements.
-- **Running peak = 16** across all settings, with **waiting peak = 30–31 requests**. The server reached the configured concurrent-sequence limit and accumulated a waiting queue.
-- The two client processes overlapped for **51.95–54.12 s**. This is a client-level timing observation, not a direct measurement of overlapping GPU prefill and decode kernels.
+**Observation 1 — Short-request TTFT changed gradually with token budget.** P99 TTFT increased from **14.37 s (budget 512)** to **15.47 s (budget 4096)**, a difference of **1.10 s**, or about **7.7%** relative to the 512 setting. This measurement does not show improved first-token latency for short requests at larger budgets.
 
-**Conclusion:** Under this mixed workload, token-budget changes affected TTFT, ITL and output throughput, but the direction was not uniformly monotonic. Queueing was present in every condition. These are **single-run observations** per budget and do not establish a universally optimal token budget.
+**Observation 2 — Decode-side P99 ITL was distinctly non-monotonic.** The four measured values were **258.92 → 420.25 → 422.93 → 85.57 ms** as the budget increased. Budget 4096 had the lowest observed P99 ITL, about **4.94× lower** than budget 2048. However, this is only one run per setting. ITL captures the tail of individual token gaps; TPOT averages token-generation time over a request and therefore need not track ITL spikes.
+
+**Observation 3 — Short-request P99 TPOT changed much less dramatically than ITL.** TPOT values were **45.44, 47.31, 51.91 and 50.64 ms**, respectively. A sharp ITL reduction at budget 4096 was **not accompanied by an equally sharp TPOT reduction**. This distinction matters for streaming: rare longer pauses may change even when average output-generation speed stays similar.
+
+**Observation 4 — Long-request TTFT did not improve consistently with larger prefill budgets.** The lowest observed long P99 TTFT was **14.40 s at budget 2048**, whereas the highest was **15.34 s at 4096**. Thus this run does not support a simple rule that increasing the token budget always accelerates long-prefill first-token delivery.
+
+**Observation 5 — Scheduling pressure existed at every budget.** In every setting, `running_peak` reached **16** (the configured `max_num_seqs`), and `waiting_peak` was **30–31**. Consequently, the roughly **14–15 s TTFT** measurements include substantial shared-server load effects; a clean, isolated Prefill-vs-Decode interference measurement would require closer timing instrumentation.
+
+**Observation 6 — Output throughput and client overlap.** Short-client output throughput declined from **441.44 tokens/s (512)** to **426.47 tokens/s (4096)**, with a lower measured value of **422.02 tokens/s** at 2048. The two client processes overlapped for **51.95–54.12 s**. Their time overlap confirms simultaneous client workloads but does not by itself prove that specific Prefill/Decode operations were concurrent inside a GPU kernel.
+
+### Overall assessment
+
+**What was measured:** all four token budgets successfully served mixed short/long synthetic workloads, with actual TTFT, TPOT, ITL, throughput, running/waiting counters and client overlap.
+
+**What the measurements show:** changing `max_num_batched_tokens` changed the observed response metrics, but **neither P99 ITL nor long-request P99 TTFT followed a consistent monotonic pattern**. No single setting was best across every metric.
+
+**Conclusion:** For this particular traffic mix, choosing Chunked Prefill's token budget requires considering the **tail of inter-token delay, first-token delay and throughput together**. One run per budget does not establish a stable performance ranking, nor a causal explanation for the notably low P99 ITL at 4096.
 
 ## How to interpret
 
