@@ -9,7 +9,7 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
 | **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
 | **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **32 measured conditions — [results](experiments/E3_continuous_batching/README.md)** |
-| **E4 — Chunked Prefill** | Mixed short-decode/long-prefill traffic, TTFT and ITL/TPOT | **Code implemented — [experiment](experiments/E4_chunked_prefill/README.md)** |
+| **E4 — Chunked Prefill** | Mixed short-decode/long-prefill traffic, TTFT and ITL/TPOT | **4 measured conditions — [results](experiments/E4_chunked_prefill/README.md)** |
 | E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
 ## E1: KV Block Size & Memory Efficiency
@@ -134,3 +134,16 @@ Two 16-condition sweeps measured `max_num_seqs` (4/8/16/32) and incoming request
 ![E3 measured request-rate vs throughput and TTFT](figures/E3_request_rate_throughput_ttft.svg)
 
 **Observation:** The waiting queue appeared (sampled peak 4–5) at 8 requests/s, along with sharply higher tail first-token latency. Increasing `max_num_seqs` did not consistently improve performance at this load. See [full E3 analysis and 32 source measurements](experiments/E3_continuous_batching/README.md).
+
+## E4: Chunked Prefill — Results
+
+The mixed workload used short requests (128 input / 256 output tokens) and long requests (4096 input / 128 output tokens), with chunked prefill enabled and token budgets of 512, 1024, 2048 and 4096.
+
+| Token budget | Short P99 TTFT | Short P99 ITL | Long P99 TTFT |
+|---:|---:|---:|---:|
+| 512 | 14.37 s | 258.92 ms | 14.61 s |
+| 1024 | 14.63 s | 420.25 ms | 14.74 s |
+| 2048 | 15.14 s | 422.93 ms | 14.40 s |
+| 4096 | 15.47 s | 85.57 ms | 15.34 s |
+
+**Observation:** P99 ITL did not vary monotonically with token budget. Running requests reached the configured limit of 16 and 30–31 waiting requests were observed in each budget setting. These are one-run-per-budget results. See [the E4 measurement table and interpretation](experiments/E4_chunked_prefill/README.md).
