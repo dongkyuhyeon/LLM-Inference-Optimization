@@ -96,6 +96,6 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 
 **Observed pattern:** in these fixed request sets, smaller blocks reduced the fraction of unused tail slots. The impact was much more pronounced for short requests (block 8: **1.16%**, block 128: **18.66%**) than long requests (**0.11%** vs **1.85%**). Block count moved in the opposite direction: e.g. mixed workload **5,384 blocks (size 8)** vs **345 blocks (size 128)**. A smaller block may therefore cost additional block management work; no speed conclusion follows from this experiment.
 
-**Important measurement caveat:** for some block sizes the CUDA allocated-memory delta exceeded the exact tensor payload (e.g. short, block 128: **16 MiB observed vs 15 MiB tensor bytes**). This is consistent with backend allocator granularity but was **not independently diagnosed**. Never label the CUDA delta as inference latency, full VRAM footprint, or a paged-attention kernel measurement.
+**CUDA allocation comparison:** For some block sizes, the measured CUDA allocated delta exceeded the calculated KV payload (e.g., short requests with block size 128: **16 MiB allocated vs 15 MiB payload**).
 
 
