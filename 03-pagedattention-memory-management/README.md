@@ -1,15 +1,16 @@
 # PagedAttention & LLM Serving Optimization
 
-Four connected experiments on KV memory management, concurrency, scheduling, and serving performance.
+Five connected experiments on KV memory management, concurrency, scheduling, and serving performance.
 
 ## Experimental roadmap
 
 | Experiment | Focus | Status |
 |---|---|---|
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
-| **E2 — Continuous Batching** | Request-rate/concurrency sweeps | **Code implemented; awaiting GPU execution — [experiment folder](experiments/E2_continuous_batching/README.md)** |
-| E3 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
-| E4 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
+| **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
+| E3 — Continuous Batching | Request-rate/concurrency sweeps | Planned |
+| E4 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
+| E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
 ## E1: KV Block Size & Memory Efficiency
 
@@ -99,3 +100,11 @@ Both theoretical CPU calculation and the optional CUDA tensor allocation run wer
 
 
 
+
+## E2: KV Capacity & Preemption — Results
+
+Actual vLLM benchmark (`Qwen/Qwen2.5-0.5B-Instruct`, FP16). The 12-condition baseline sweep had **2.16% maximum observed KV usage** and **zero preemptions**. A separate higher-load run (96 requests, 2,048 input + 1,024 output tokens, 16 req/s, max 32 sequences) reached **12.06% KV usage**, **75 waiting requests at peak**, **100.35 s P99 TTFT**, **695.24 output tokens/s**, and **zero preemptions**.
+
+![Measured KV usage comparison](figures/E2_kv_usage_comparison.svg)
+
+**Interpretation:** Queueing occurred before KV memory was exhausted. The experiment did not trigger KV-capacity-based preemption. See [compact E2 results, setup and code](experiments/E2_kv_capacity_preemption/README.md).
