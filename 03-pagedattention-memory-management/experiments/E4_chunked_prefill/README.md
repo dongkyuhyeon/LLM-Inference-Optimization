@@ -62,6 +62,8 @@ The following is transcribed from the experimenter's displayed `summary.csv` dat
 | 2048 | 15138.918402 | 51.914521 | 422.933350 | 14398.970268 | 422.023377 | 16 | 30 | 52.832 |
 | 4096 | 15469.061988 | 50.641165 | 85.567313 | 15336.681276 | 426.469059 | 16 | 31 | 54.120 |
 
+![E4 measured P99 ITL and TTFT by token budget](../../figures/E4_chunked_prefill_latency.svg)
+
 ### Result interpretation
 
 - **Short P99 TTFT** increased from **14.37 s** at budget 512 to **15.47 s** at budget 4096 in this run.
