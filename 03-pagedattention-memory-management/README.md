@@ -10,7 +10,7 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 | **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
 | **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **32 measured conditions — [results](experiments/E3_continuous_batching/README.md)** |
 | **E4 — Chunked Prefill** | Mixed short-decode/long-prefill traffic, TTFT and ITL/TPOT | **4 measured conditions — [results](experiments/E4_chunked_prefill/README.md)** |
-| E5 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
+| **E5 — Prefix Caching** | Shared vs unique prefixes, cache ON/OFF, TTFT and cache hits | **Code implemented — [experiment](experiments/E5_prefix_caching/README.md)** |
 
 ## E1: KV Block Size & Memory Efficiency
 
