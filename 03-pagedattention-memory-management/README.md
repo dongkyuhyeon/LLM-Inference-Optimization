@@ -133,7 +133,11 @@ Two 16-condition sweeps measured `max_num_seqs` (4/8/16/32) and incoming request
 
 ![E3 measured request-rate vs throughput and TTFT](figures/E3_request_rate_throughput_ttft.svg)
 
-**Observation:** The waiting queue appeared (sampled peak 4–5) at 8 requests/s, along with sharply higher tail first-token latency. Increasing `max_num_seqs` did not consistently improve performance at this load. See [full E3 analysis and 32 source measurements](experiments/E3_continuous_batching/README.md).
+**Observed behavior:** Increasing arrival rate from 1 to 8 req/s raised output throughput from **246.30 to 1,176.36 tokens/s**, but the sampled waiting peak changed from **0 to 4–5 requests** and the mean condition-level P99 TTFT rose to **1.02 s**. At 8 req/s, increasing `max_num_seqs` from 4 to 32 did not consistently improve throughput or first-token latency.
+
+![E3 measured impact of max_num_seqs at 8 requests per second](figures/E3_seq_limit_at_rate8.svg)
+
+See [all 16 averaged settings, both graphs and detailed E3 interpretation](experiments/E3_continuous_batching/README.md).
 
 ## E4: Chunked Prefill — Results
 
@@ -148,4 +152,4 @@ The mixed workload used short requests (128 input / 256 output tokens) and long 
 
 ![E4 measured Chunked Prefill latency by token budget](figures/E4_chunked_prefill_latency.svg)
 
-**Observation:** P99 ITL did not vary monotonically with token budget. Running requests reached the configured limit of 16 and 30–31 waiting requests were observed in each budget setting. These are one-run-per-budget results. See [the E4 measurement table and interpretation](experiments/E4_chunked_prefill/README.md).
+**Observed behavior:** Short P99 ITL was non-monotonic (**258.92 → 420.25 → 422.93 → 85.57 ms**), while Short P99 TTFT increased from **14.37 to 15.47 s** across the tested budgets. Running requests reached the limit of **16**, with **30–31 waiting** at peak. Results are from one run per budget; see [E4's complete measurements, graph and six detailed observations](experiments/E4_chunked_prefill/README.md).
