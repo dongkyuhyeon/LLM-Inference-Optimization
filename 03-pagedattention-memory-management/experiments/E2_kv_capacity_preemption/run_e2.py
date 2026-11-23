@@ -214,7 +214,6 @@ def main():
                 "--max-num-seqs", str(max_seqs),
                 "--max-model-len", str(args.max_model_len),
                 "--max-num-batched-tokens", str(args.max_num_batched_tokens),
-                "--disable-log-requests",
             ]
             print(f"START server: memory={mem}, max_num_seqs={max_seqs}", flush=True)
             with (case_dir / "server.log").open("w", encoding="utf-8") as server_log:
