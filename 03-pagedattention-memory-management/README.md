@@ -7,7 +7,7 @@ Four connected experiments on KV memory management, concurrency, scheduling, and
 | Experiment | Focus | Status |
 |---|---|---|
 | **E1 — Block Size & Memory Efficiency** | KV allocation, token-slot fragmentation, CUDA tensor allocation | **CPU + CUDA allocation runs reported (2026-11-23)** |
-| **E2 — Continuous Batching** | Request-rate/concurrency sweeps | **Planned — [experiment folder](experiments/E2_continuous_batching/README.md)** |
+| **E2 — Continuous Batching** | Request-rate/concurrency sweeps | **Code implemented; awaiting GPU execution — [experiment folder](experiments/E2_continuous_batching/README.md)** |
 | E3 — Chunked Prefill | TTFT, ITL/TPOT, token-budget trade-offs | Planned |
 | E4 — Prefix Caching | Shared-prefix hit/miss and end-to-end performance | Planned |
 
