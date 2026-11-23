@@ -28,6 +28,18 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 
 All block sizes are evaluated on the **same token lengths** within each workload.
 
+### Workload input lengths and token totals
+
+E1 uses **synthetic request lengths, not real prompts or token IDs**. Each workload consists of 24 requests generated using Python `random.Random(1993)`.
+
+| Workload | Requests | Tokens per request | Total used tokens |
+|---|---:|---|---:|
+| Short | 24 | Uniform random integer from 64 to 512 | **6,247** |
+| Long | 24 | Uniform random integer from 2,048 to 4,096 | **74,999** |
+| Mixed | 24 | 12 Short + 12 Long requests | **42,993** |
+
+`mixed` is formed from `short[:12] + long[12:]`, reusing the original randomly sampled lengths. The `Total used tokens` values above are the actual sums from the E1 run and do not include block padding. These lengths are used solely to estimate/allocate KV storage; no model prefill or decode is executed.
+
 ### Formulas
 
 ```text
