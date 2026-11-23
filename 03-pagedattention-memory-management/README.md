@@ -146,4 +146,6 @@ The mixed workload used short requests (128 input / 256 output tokens) and long 
 | 2048 | 15.14 s | 422.93 ms | 14.40 s |
 | 4096 | 15.47 s | 85.57 ms | 15.34 s |
 
+![E4 measured Chunked Prefill latency by token budget](figures/E4_chunked_prefill_latency.svg)
+
 **Observation:** P99 ITL did not vary monotonically with token budget. Running requests reached the configured limit of 16 and 30–31 waiting requests were observed in each budget setting. These are one-run-per-budget results. See [the E4 measurement table and interpretation](experiments/E4_chunked_prefill/README.md).
