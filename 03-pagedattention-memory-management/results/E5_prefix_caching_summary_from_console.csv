@@ -1,0 +1,13 @@
+target_prefix_tokens,cache_enabled,workload,ttft_mean_ms,prefix_hit_ratio,measured_output_throughput_tps,source
+512,off,unique,52.5,,152.57333127700468,user_console_output_2026-11-24
+512,off,shared,53.9,,151.71341566984086,user_console_output_2026-11-24
+512,on,unique,53.5,0,152.12469880875219,user_console_output_2026-11-24
+512,on,shared,28,0.9752380952380952,162.20828202510214,user_console_output_2026-11-24
+1024,off,unique,128.3,,125.34040935346334,user_console_output_2026-11-24
+1024,off,shared,127.9,,125.26021433378584,user_console_output_2026-11-24
+1024,on,unique,130.6,0,124.94903177688197,user_console_output_2026-11-24
+1024,on,shared,27.3,0.9865125240847784,156.3230771584839,user_console_output_2026-11-24
+2048,off,unique,384.8,,80.67859264311264,user_console_output_2026-11-24
+2048,off,shared,384.6,,80.47063098487476,user_console_output_2026-11-24
+2048,on,unique,386,0,80.47969594140076,user_console_output_2026-11-24
+2048,on,shared,38.9,0.9932104752667313,142.34054675562834,user_console_output_2026-11-24
