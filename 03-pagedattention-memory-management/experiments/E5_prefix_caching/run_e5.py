@@ -87,16 +87,24 @@ def percentile(values, fraction):
 
 
 def cache_flag():
-    help_result = subprocess.run(
-        ["vllm", "serve", "--help"], capture_output=True, text=True)
-    if help_result.returncode != 0:
-        raise RuntimeError("vllm serve --help failed. Check vLLM installation.")
-    flags = help_result.stdout + help_result.stderr
-    if "--no-enable-prefix-caching" in flags:
-        return "--no-enable-prefix-caching"
-    if "--disable-prefix-caching" in flags:
-        return "--disable-prefix-caching"
-    raise RuntimeError("No supported prefix-caching OFF flag found in vllm serve --help")
+    """Detect OFF flag from the full vLLM serve CLI help.
+
+    vLLM's short --help does not necessarily display CacheConfig arguments.
+    """
+    checks = (["vllm", "serve", "--help=all"],
+              ["vllm", "serve", "--help=CacheConfig"])
+    text = ""
+    for cmd in checks:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            text += "\n" + result.stdout + result.stderr
+    for flag in ("--no-enable-prefix-caching", "--disable-prefix-caching"):
+        if flag in text:
+            return flag
+    raise RuntimeError(
+        "Could not locate a prefix-caching OFF flag in the full CLI help. "
+        "Run: vllm serve --help=all and search for prefix-caching."
+    )
 
 
 def create_prefix(tokenizer, target, variant):
