@@ -58,17 +58,43 @@ python experiments/E5_prefix_caching/run_e5.py \
   --output-tokens 64 --gpu-memory-utilization 0.80
 ```
 
-**Expected output** (not pre-measured values):
+## E5 measured results — 2026-11-24
 
-```text
-START prefix=512, cache=off
-    unique #1/12: TTFT=...
-    ...
-  DONE unique: TTFT mean=... hit_ratio=... throughput=...
-  DONE shared: TTFT mean=... hit_ratio=... throughput=...
-...
-SUMMARY: results/E5_prefix_caching/<UTC timestamp>/summary.csv
-```
+All **12 conditions** completed (3 target prefix lengths × cache ON/OFF × Shared/Unique). Each condition has **12 measured sequential requests** following one warm-up request.
+
+### Mean TTFT and Cache Hit Ratio
+
+| Prefix | Cache OFF / Unique | Cache OFF / Shared | Cache ON / Unique | Cache ON / Shared | Cache ON / Shared hit ratio |
+|---:|---:|---:|---:|---:|---:|
+| 512 tokens | 52.5 ms | **53.9 ms** | 53.5 ms | **28.0 ms** | 97.52% |
+| 1,024 tokens | 128.3 ms | **127.9 ms** | 130.6 ms | **27.3 ms** | 98.65% |
+| 2,048 tokens | 384.8 ms | **384.6 ms** | 386.0 ms | **38.9 ms** | 99.32% |
+
+In **Cache ON / Unique**, the observed hit ratio was **0.00%** at all three lengths. When caching was OFF, the hit-ratio metric was unavailable (shown as `None` in the console), not 0%.
+
+![Measured E5 TTFT by cache state and prefix pattern](../../figures/E5_prefix_cache_ttft.svg)
+
+### Shared-prefix comparison: response and output throughput
+
+| Shared prefix | Cache OFF mean TTFT | Cache ON mean TTFT | Relative TTFT reduction | TTFT speedup | Output TPS OFF → ON |
+|---:|---:|---:|---:|---:|---:|
+| 512 | 53.9 ms | 28.0 ms | **48.1%** | **1.93×** | 151.71 → 162.21 |
+| 1,024 | 127.9 ms | 27.3 ms | **78.7%** | **4.68×** | 125.26 → 156.32 |
+| 2,048 | 384.6 ms | 38.9 ms | **89.9%** | **9.89×** | 80.47 → 142.34 |
+
+**Observation 1 — Cache reuse was measured directly.** With caching ON, Shared requests reported a **97.52–99.32% token-level hit ratio**, while Unique requests reported **0%**. This supports that reusing the same token prefix, not merely enabling the cache flag, drove the large TTFT differences.
+
+**Observation 2 — Prefill cost increases without reuse.** For Shared requests with caching OFF, mean TTFT increased from **53.9 ms (512)** to **384.6 ms (2048)**. With caching ON, mean TTFT stayed in the **27.3–38.9 ms** range over those lengths.
+
+**Observation 3 — Larger shared prefixes showed greater relative TTFT savings.** OFF→ON reductions were **48.1%, 78.7%, 89.9%** for 512, 1024 and 2048 tokens. The largest setting had about a **9.89× TTFT speedup**.
+
+**Observation 4 — The Unique control stayed near the uncached baseline.** Cache ON / Unique TTFT was **53.5, 130.6 and 386.0 ms**, closely matching Cache OFF / Unique **52.5, 128.3 and 384.8 ms**. Simply enabling caching did not meaningfully reduce first-token latency when there was no reusable shared prefix.
+
+**Observation 5 — Output throughput improved in this sequential-request setup.** For Shared prompts, the measured client-side output tokens/s increased from **151.71→162.21**, **125.26→156.32**, and **80.47→142.34**, respectively. These are sequential benchmark throughputs, **not** peak throughput under concurrent production traffic.
+
+**Conclusion:** In this workload, actual KV prefix reuse was accompanied by substantial reductions in first-token latency. The effect grew with the reused prefix length, and the Unique-prefix control did not show the same benefit. This is evidence for **Automatic Prefix Caching** in the tested serving setup; it does not establish the same numerical improvement for unrelated models, GPUs, or concurrent traffic.
+
+**Source:** [Twelve console-transcribed E5 measurements](../../results/E5_prefix_caching_summary_from_console.csv) from run `20261124T061331Z`. Detailed per-request TTFTs were printed in the console, while the original runtime CSV was not supplied to GitHub.
 
 ## Analysis plan
 
@@ -90,7 +116,7 @@ results/E5_prefix_caching/<UTC_timestamp>/
     └── shared_requests.csv
 ```
 
-**Status:** Code implemented; awaiting actual GPU measurement. No results are claimed in advance.
+**Status:** Full 12-condition benchmark completed; actual values, plot and conclusions recorded.
 
 ## Reference
 
