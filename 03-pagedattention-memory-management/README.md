@@ -10,7 +10,7 @@ Five connected experiments on KV memory management, concurrency, scheduling, and
 | **E2 — KV Capacity & Preemption** | Real vLLM serving, KV occupancy, queueing | **Measured — [results](experiments/E2_kv_capacity_preemption/README.md)** |
 | **E3 — Continuous Batching** | Request-rate/concurrency sweeps | **32 measured conditions — [results](experiments/E3_continuous_batching/README.md)** |
 | **E4 — Chunked Prefill** | Mixed short-decode/long-prefill traffic, TTFT and ITL/TPOT | **4 measured conditions — [results](experiments/E4_chunked_prefill/README.md)** |
-| **E5 — Prefix Caching** | Shared vs unique prefixes, cache ON/OFF, TTFT and cache hits | **Code implemented — [experiment](experiments/E5_prefix_caching/README.md)** |
+| **E5 — Prefix Caching** | Shared vs unique prefixes, cache ON/OFF, TTFT and cache hits | **12 measured conditions — [results](experiments/E5_prefix_caching/README.md)** |
 
 ## E1: KV Block Size & Memory Efficiency
 
@@ -153,3 +153,17 @@ The mixed workload used short requests (128 input / 256 output tokens) and long 
 ![E4 measured Chunked Prefill latency by token budget](figures/E4_chunked_prefill_latency.svg)
 
 **Observed behavior:** Short P99 ITL was non-monotonic (**258.92 → 420.25 → 422.93 → 85.57 ms**), while Short P99 TTFT increased from **14.37 to 15.47 s** across the tested budgets. Running requests reached the limit of **16**, with **30–31 waiting** at peak. Results are from one run per budget; see [E4's complete measurements, graph and six detailed observations](experiments/E4_chunked_prefill/README.md).
+
+## E5: Prefix Caching — Results
+
+The final experiment tested **Prefix Cache ON/OFF** and **Shared/Unique prompts** for three prefix lengths. Each condition used 12 measured sequential requests (plus warm-up).
+
+| Shared prefix | Cache OFF mean TTFT | Cache ON mean TTFT | TTFT reduction | Cache ON hit ratio |
+|---:|---:|---:|---:|---:|
+| 512 tokens | 53.9 ms | 28.0 ms | **48.1%** | **97.52%** |
+| 1024 tokens | 127.9 ms | 27.3 ms | **78.7%** | **98.65%** |
+| 2048 tokens | 384.6 ms | 38.9 ms | **89.9%** | **99.32%** |
+
+![E5 measured TTFT with Prefix Cache ON/OFF](figures/E5_prefix_cache_ttft.svg)
+
+**Observed behavior:** Shared prompts with caching ON showed substantial TTFT reductions and high token-level prefix cache hit ratios, while the unique-prefix control had **0% hits** and little change in TTFT. The result demonstrates KV prefix reuse under the tested sequential request workload. See [all twelve results and detailed E5 interpretation](experiments/E5_prefix_caching/README.md).
